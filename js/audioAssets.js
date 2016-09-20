@@ -1,6 +1,7 @@
 'use strict';
 
-// Audio Source - AWS Podcast : https://aws.amazon.com/podcasts/aws-podcast/
+var fileName = 'https://s3.amazonaws.com/boswellapp/1472935287.18748-1967D471-70F6-4BD7-9C03-7FEFB75B3D5F-100079.wav';
+
 var audioData = [
     {
         'title': 'Question 65: Describe an error you made, why you made it, and the impact it had on your life.',
@@ -19,8 +20,8 @@ var audioData = [
         'url': 'https://s3.amazonaws.com/boswellapp/1472935408.81362-1967D471-70F6-4BD7-9C03-7FEFB75B3D5F-100073.wav'
     },
     {
-        'title': 'Question 65: Describe an error you made, why you made it, and the impact it had on your life.',
-        'url': 'https://s3.amazonaws.com/boswellapp/1472935087.45316-1967D471-70F6-4BD7-9C03-7FEFB75B3D5F-100065.wav'
+        'title': 'This should be question 79 again, but we are using the filename variable here.',
+        'url': fileName
     },
     {
         'title': 'Question 79: Have you ever been a whistleblower, exposing something unethical or illegal? If so, describe it.',

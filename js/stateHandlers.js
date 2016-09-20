@@ -20,7 +20,7 @@ var stateHandlers = {
             //  Change state to START_MODE
             this.handler.state = constants.states.START_MODE;
 
-            var message = 'Welcome to Boswell. You can say, playback the interview, to begin listening to previously recorded interviews.';
+            var message = 'Welcome to Boswell Memory. You can say, playback the interview, to begin listening to previously recorded interviews.';
             var reprompt = 'You can say, playback the interview, to begin.';
 
             this.response.speak(message).listen(reprompt);
@@ -94,7 +94,12 @@ var stateHandlers = {
             this.response.speak(message).listen(reprompt);
             this.emit(':responseReady');
         },
-        'PlayAudio' : function () { controller.play.call(this) },
+        'PlayAudio': function () {
+            message = 'You are now listening to ' + audioData[this.attributes['playOrder'][this.attributes['index']]].title +
+    ' Ready?';
+            reprompt = 'You can say yes to resume or no to play from the top.';
+            controller.play.call(this)
+        },
         'AMAZON.NextIntent' : function () { controller.playNext.call(this) },
         'AMAZON.PreviousIntent' : function () { controller.playPrevious.call(this) },
         'AMAZON.PauseIntent' : function () { controller.stop.call(this) },
