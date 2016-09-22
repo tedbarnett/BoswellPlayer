@@ -17,10 +17,13 @@ var stateHandlers = {
             this.attributes['loop'] = true;
             this.attributes['shuffle'] = false;
             this.attributes['playbackIndexChanged'] = true;
+            // try setting the filename value (THB)
+             this.attributes['nextInterview'] = 'inLaunchRequest1.wav';
+
             //  Change state to START_MODE
             this.handler.state = constants.states.START_MODE;
 
-            var message = 'Welcome to Boswell Memory. You can say, playback the interview, to begin listening to previously recorded interviews.';
+            var message = 'Welcome to Boswell. You can say, playback the interview, to begin listening to previously recorded interviews.';
             var reprompt = 'You can say, playback the interview, to begin.';
 
             this.response.speak(message).listen(reprompt);
@@ -38,10 +41,13 @@ var stateHandlers = {
                 //  Change state to START_MODE
                 this.handler.state = constants.states.START_MODE;
             }
+
+            // try setting the filename value (THB)
+             this.attributes['nextInterview'] = 'inPlayAudio.wav';
             controller.play.call(this);
         },
         'AMAZON.HelpIntent' : function () {
-            var message = 'Welcome to Boswell. You can say, playback the interview, to begin listening to previously recorded interviews.';
+            var message = 'Happy to help. You can say, playback the interview, to begin listening to previously recorded interviews.';
             this.response.speak(message).listen(message);
             this.emit(':responseReady');
         },
@@ -86,20 +92,17 @@ var stateHandlers = {
                 reprompt = 'You can say, playback the interview, to begin.';
             } else {
                 this.handler.state = constants.states.RESUME_DECISION_MODE;
-                message = 'You were listening to ' + audioData[this.attributes['playOrder'][this.attributes['index']]].title +
+                message = 'Welcome back.  You were listening to ' + audioData[this.attributes['playOrder'][this.attributes['index']]].title +
                     ' Would you like to resume?';
                 reprompt = 'You can say yes to resume or no to play from the top.';
             }
+            // try setting the filename value (THB)
+             this.attributes['nextInterview'] = 'inLaunchRequest2.wav';
 
             this.response.speak(message).listen(reprompt);
             this.emit(':responseReady');
         },
-        'PlayAudio': function () {
-            message = 'You are now listening to ' + audioData[this.attributes['playOrder'][this.attributes['index']]].title +
-    ' Ready?';
-            reprompt = 'You can say yes to resume or no to play from the top.';
-            controller.play.call(this)
-        },
+        'PlayAudio' : function () { controller.play.call(this) },
         'AMAZON.NextIntent' : function () { controller.playNext.call(this) },
         'AMAZON.PreviousIntent' : function () { controller.playPrevious.call(this) },
         'AMAZON.PauseIntent' : function () { controller.stop.call(this) },
@@ -145,6 +148,8 @@ var stateHandlers = {
                 ' Would you like to resume?';
             var reprompt = 'You can say yes to resume or no to play from the top.';
             this.response.speak(message).listen(reprompt);
+            // try setting the filename value (THB)
+             this.attributes['nextInterview'] = 'inResumeDecisionMode.wav';
             this.emit(':responseReady');
         },
         'AMAZON.YesIntent' : function () { controller.play.call(this) },
@@ -305,7 +310,7 @@ var controller = function () {
             });
         },
         shuffleOff: function () {
-            // Turn off shuffle play. 
+            // Turn off shuffle play.
             if (this.attributes['shuffle']) {
                 this.attributes['shuffle'] = false;
                 // Although changing index, no change in audio file being played as the change is to account for reordering playOrder
