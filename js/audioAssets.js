@@ -1,31 +1,45 @@
 'use strict';
 
+var AWS = require("aws-sdk");
+
+AWS.config.update({
+    region: "us-east-1",
+    endpoint: "https://dynamodb.us-east-1.amazonaws.com"
+});
+
+var docClient = new AWS.DynamoDB.DocumentClient()
+
+var table = "TestTable";
+
+var userId = "1967D471-70F6-4BD7-9C03-7FEFB75B3D5F";
+
+var params = {
+    TableName: table,
+    Key: {
+        "userId": userId
+    }
+};
+
+docClient.get(params, function (err, data) {
+    if (err) {
+        console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
+        titleText = "Oops.  An error when reading from Dynamo DB";
+    } else {
+        console.log("GetItem succeeded:", JSON.stringify(data, null, 2));
+        titleText = "I read the data successfully";
+    }
+});
+
 var fileName = 'https://s3.amazonaws.com/boswellapp/1472935287.18748-1967D471-70F6-4BD7-9C03-7FEFB75B3D5F-100079.wav';
 
 var audioData = [
     {
-        'title': 'Question 65: Describe an error you made, why you made it, and the impact it had on your life.',
-        'url': 'https://s3.amazonaws.com/boswellapp/1472935087.45316-1967D471-70F6-4BD7-9C03-7FEFB75B3D5F-100065.wav'
+        'title': titleText,
+        'url': filename
     },
     {
-        'title': 'Question 79: Have you ever been a whistleblower, exposing something unethical or illegal? If so, describe it.',
-        'url': 'https://s3.amazonaws.com/boswellapp/1472935287.18748-1967D471-70F6-4BD7-9C03-7FEFB75B3D5F-100079.wav'
-    },
-    {
-        'title': 'Question 67: Name one of your favorite books, and explain why it’s a favorite.',
-        'url': 'https://s3.amazonaws.com/boswellapp/1472935334.67451-1967D471-70F6-4BD7-9C03-7FEFB75B3D5F-100067.wav'
-    },
-    {
-        'title': 'Question 73: Have you ever had an accident? Describe it, and what you learned from the experience.',
-        'url': 'https://s3.amazonaws.com/boswellapp/1472935408.81362-1967D471-70F6-4BD7-9C03-7FEFB75B3D5F-100073.wav'
-    },
-    {
-        'title': 'Here is question 79 again, but we are using the filename variable here.',
-        'url': fileName
-    },
-    {
-        'title': 'Question 79: Have you ever been a whistleblower, exposing something unethical or illegal? If so, describe it.',
-        'url': 'https://s3.amazonaws.com/boswellapp/1472935287.18748-1967D471-70F6-4BD7-9C03-7FEFB75B3D5F-100079.wav'
+        'title': titleText,
+        'url': filename
     }
 ];
 
