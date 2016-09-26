@@ -14,6 +14,7 @@ var table = "TestTable";
 var userId = "1967D471-70F6-4BD7-9C03-7FEFB75B3D5F";
 var getItemData = {};
 var sayText = "Here is the sayText";
+var titleText = "initialized";
 
 var params = {
     TableName: table,
@@ -22,7 +23,7 @@ var params = {
     }
 };
 
-var titleText = docClient.get(params, function (err, data) {
+titleText = docClient.get(params, function (err, data) {
     if (err) {
         console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
         sayText = "Oops.  An error when reading from Dynamo DB";
