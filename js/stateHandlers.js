@@ -86,6 +86,7 @@ var stateHandlers = {
                 reprompt = 'You can say, playback the interview, to begin.';
             } else {
                 this.handler.state = constants.states.RESUME_DECISION_MODE;
+                console.log('at line 89!');
                 message = 'You were listening to ' + audioData[this.attributes['playOrder'][this.attributes['index']]].title +
                     ' Would you like to resume?';
                 reprompt = 'You can say yes to resume or no to play from the top.';

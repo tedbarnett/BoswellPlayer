@@ -11,7 +11,6 @@ var docClient = new AWS.DynamoDB.DocumentClient()
 
 var table = "TestTable";
 var userId = "1967D471-70F6-4BD7-9C03-7FEFB75B3D5F"; // Ted Barnett's latest recording
-global.fileName = "default";
 
 var params = {
     TableName: table,
@@ -27,36 +26,28 @@ docClient.get(params, function (err, data) {
         return callback(err);
     } else {
         //getItemData = JSON.stringify(data, null, 2);
-        var ret = data;
-
-        console.log("data.Item.filename: ", data.Item.filename);
-        //var fileName = result.Item.filename;
-        //var transcription = result.Item.transcription;
-        //console.log("data = ", data);
-        console.log("---");
-        //console.log("docClient = ", return);
-        global.fileName = data.Item.filename;
-
-        return;
+        ret = data;
+        callback(null, ret);
     }
 });
 
 
+var fileName = result.Item.filename;
+var transcription = result.Item.transcription;
+console.log("result = ", result);
+console.log("---");
+console.log("insideAudioData = ", insideAudioData);
 
-var audioData = [];
+audioData = [];
 audioData[1] =
     {
         'title': "outside works",
-        'url': 'https://s3.amazonaws.com/boswellapp/1471976625.4458-EA51A89D-792B-4C20-9870-AC4D31C4D51F-100027.wav'
+        'url': fileName
     };
 
 audioData[2] =
     {
-        'title': '2_' + 'outside works',
-        'url': 'https://s3.amazonaws.com/boswellapp/1471976625.4458-EA51A89D-792B-4C20-9870-AC4D31C4D51F-100027.wav'
+        'title': '2_' + "outside works,
+        'url': fileName
     };
 module.exports = audioData;
-console.log("audioData=", audioData);
-console.log("global.fileName = ", global.fileName);
-
-
