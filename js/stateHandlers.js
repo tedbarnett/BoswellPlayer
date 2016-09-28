@@ -1,7 +1,7 @@
 'use strict';
 
 var Alexa = require('alexa-sdk');
-var audioData = require('./boswellStories');
+var audioData = require('./audio-data.js');
 var constants = require('./constants');
 
 var stateHandlers = {
