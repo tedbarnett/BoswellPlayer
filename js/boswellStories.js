@@ -1,7 +1,15 @@
 ﻿'use strict';
 
+// HELP NEEDED:
+// I have replaced "audioAssets.js" with this new script (boswellStories.js)
+// Rather than rely on staticly-defined list of podcasts, I want to load the URL of specific .wav files from
+// a DynamoDB database.  The "docClient.get" code below seems to work perfectly (I can see that from the console.log
+// lines, and I know that these are valid .wav files, BUT...
+// This may simply be a "closure" Javascript issue that my tiny brain cannot get around, but I cannot properly load
+// the array "audioData[]" into the module.exports for this script.  How can I use a dynamoDB call to load data into
+// the module.exports for this script?
+
 var AWS = require("aws-sdk");
-var fs = require('fs');
 
 AWS.config.update({
     region: "us-east-1",
@@ -10,9 +18,8 @@ AWS.config.update({
 
 var docClient = new AWS.DynamoDB.DocumentClient()
 
-var table = "boswellMemories";
-var boswellUserId = "1967D471-70F6-4BD7-9C03-7FEFB75B3D5F"; // Look for Ted Barnett's latest recording.  Later replace this with friends list.
-
+var table = "boswellMemories"; // the name of my dynamoDB database
+var boswellUserId = "1967D471-70F6-4BD7-9C03-7FEFB75B3D5F"; // index into dynamoDB database
 
 var params = {
     TableName: table,
@@ -21,44 +28,43 @@ var params = {
         }
     };
 
-module.exports = function (callback) {
-    docClient.get(params, function (err, data) {
-        if (err) {
-            console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
-            return callback(err);
-        } else {
-            console.log("*** I am INSIDE the docClient.get call...");
-            //getItemData = JSON.stringify(data, null, 2);
-            var ret = data;
-            var audioData = [];
-            audioData.push(
-                {
-                    'title': "title 1",
-                    'url': 'https://s3.amazonaws.com/boswellapp/1471976625.4458-EA51A89D-792B-4C20-9870-AC4D31C4D51F-100027.wav'
-                }
-            );
-            audioData.push(
-                {
-                    'title': "title 2",
-                    'url': 'https://s3.amazonaws.com/boswellapp/1471976625.4458-EA51A89D-792B-4C20-9870-AC4D31C4D51F-100027.wav'
-                }
-            );
-            fs.writeFile('/tmp/audio-data.js', 'module.exports = ' + audioData, function(err) {
-                console.log(err);
-                callback();
-            })
-          }
-    });
-    // help from jontewks@gmail.com
 
-    console.log("---");
-    console.log("*** I am OUTSIDE the docClient.get call...");
-//    console.log("audioData=", audioData);
+docClient.get(params, function (err, data) {
+    if (err) {
+        console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
+        return callback(err);
+    } else {
 
-}
+        var audioData = [];
+        audioData[1] =
+            {
+                'title': data.Item.transcription,
+                'url': data.Item.filename
+            };
+
+        audioData[2] =
+            {
+                'title': data.Item.transcription,
+                'url': data.Item.filename
+            };
+ //       console.log("data.Item.filename: ", data.Item.filename); // data is properly loaded from the "data" db call above
+        console.log("audioData=", audioData); // displays the correct result when I run this on my console (and on Lambda)
+
+        module.exports = audioData; // this does not seem to work!
+        return;
+    }
+});
+
+// if I put the module.exports = audioData" line here, it tells me it can't find "audioData".  It is presumably
+// only available inside the docClient.get function above.  Argh.  Globals?
 
 
-//// the OLD way:
+
+
+
+// -------------------------------------------------------------------------------------
+// the OLD way (from the original audioAssets.js)
+// this works of course, but it is outside the dynamoDB .get request that I need to make!
 
 //var audioData = [
 //    {
@@ -88,3 +94,6 @@ module.exports = function (callback) {
 //];
 
 //module.exports = audioData;
+
+
+

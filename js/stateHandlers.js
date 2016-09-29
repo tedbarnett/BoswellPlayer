@@ -1,7 +1,7 @@
 'use strict';
 
 var Alexa = require('alexa-sdk');
-var audioData = require('./tmp/audio-data.js');
+var audioData = require('./boswellStories');
 var constants = require('./constants');
 
 var stateHandlers = {
@@ -306,7 +306,7 @@ var controller = function () {
             });
         },
         shuffleOff: function () {
-            // Turn off shuffle play.
+            // Turn off shuffle play. 
             if (this.attributes['shuffle']) {
                 this.attributes['shuffle'] = false;
                 // Although changing index, no change in audio file being played as the change is to account for reordering playOrder
