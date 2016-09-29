@@ -33,21 +33,21 @@ module.exports = function (callback) {
             var audioData = [];
             audioData.push(
                 {
-                    'title': "outside works",
+                    'title': "title 1",
                     'url': 'https://s3.amazonaws.com/boswellapp/1471976625.4458-EA51A89D-792B-4C20-9870-AC4D31C4D51F-100027.wav'
                 }
             );
             audioData.push(
                 {
-                    'title': "2 outside works",
+                    'title': "title 2",
                     'url': 'https://s3.amazonaws.com/boswellapp/1471976625.4458-EA51A89D-792B-4C20-9870-AC4D31C4D51F-100027.wav'
                 }
             );
-            var path = '/tmp/audio-data.js'
-            fs.writeFile(path, 'module.exports = ' + audioData, function(err) {
+            fs.writeFile('/tmp/audio-data.js', 'module.exports = ' + audioData, function(err) {
                 console.log(err);
                 callback();
-            })        }
+            })
+          }
     });
     // help from jontewks@gmail.com
 
@@ -88,6 +88,3 @@ module.exports = function (callback) {
 //];
 
 //module.exports = audioData;
-
-
-
