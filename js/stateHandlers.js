@@ -73,7 +73,10 @@ var stateHandlers = {
          *  All Intent Handlers for state : PLAY_MODE
          */
         'LaunchRequest' : function () {
+          var _this = this;
             audioData(function(err, list) {  // Added per Mike Reinsten email
+              // Initialize Attributes
+                _this.attributes['playOrder'] = Array.apply(null, {length: list.length}).map(Number.call, Number);
             /*
              *  Session resumed in PLAY_MODE STATE.
              *  If playback had finished during last session :
@@ -85,20 +88,20 @@ var stateHandlers = {
              */
             var message;
             var reprompt;
-            if (this.attributes['playbackFinished']) {
-                this.handler.state = constants.states.START_MODE;
+            if (_this.attributes['playbackFinished']) {
+                _this.handler.state = constants.states.START_MODE;
                 message = 'Welcome to Boswell. You can say, playback the interview, to begin listening to previously recorded interviews.';
                 reprompt = 'You can say, playback the interview, to begin.';
             } else {
-                this.handler.state = constants.states.RESUME_DECISION_MODE;
+                _this.handler.state = constants.states.RESUME_DECISION_MODE;
                 console.log('at line 89!');
-                message = 'You were listening to ' + list[this.attributes['playOrder'][this.attributes['index']]].title +
+                message = 'You were listening to ' + list[_this.attributes['playOrder'][_this.attributes['index']]].title +
                     ' Would you like to resume?';
                 reprompt = 'You can say yes to resume or no to play from the top.';
             }
 
-            this.response.speak(message).listen(reprompt);
-            this.emit(':responseReady');
+            _this.response.speak(message).listen(reprompt);
+            _this.emit(':responseReady');
           });
         },
         'PlayAudio': function () {
