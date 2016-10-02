@@ -39,6 +39,7 @@ var audioEventHandlers = Alexa.CreateStateHandler(constants.states.PLAY_MODE, {
         this.emit(':saveState', true);
     },
     'PlaybackNearlyFinished' : function () {
+        audioData(function(err, list) {  // Added per Mike Reinsten email
         /*
          * AudioPlayer.PlaybackNearlyFinished Directive received.
          * Using this opportunity to enqueue the next audio
@@ -53,7 +54,7 @@ var audioEventHandlers = Alexa.CreateStateHandler(constants.states.PLAY_MODE, {
              */
             return this.context.succeed(true);
         }
-        
+
         var enqueueIndex = this.attributes['index'];
         enqueueIndex +=1;
         // Checking if  there are any items to be enqueued.
@@ -74,9 +75,10 @@ var audioEventHandlers = Alexa.CreateStateHandler(constants.states.PLAY_MODE, {
         var podcast = audioData[this.attributes['playOrder'][enqueueIndex]];
         var expectedPreviousToken = this.attributes['token'];
         var offsetInMilliseconds = 0;
-        
+
         this.response.audioPlayerPlay(playBehavior, podcast.url, enqueueToken, expectedPreviousToken, offsetInMilliseconds);
         this.emit(':responseReady');
+      });
     },
     'PlaybackFailed' : function () {
         //  AudioPlayer.PlaybackNearlyFinished Directive received. Logging the error.

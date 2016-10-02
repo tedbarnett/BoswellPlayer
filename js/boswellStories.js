@@ -1,5 +1,7 @@
 ﻿'use strict';
 
+// Made Mike Reinstein changes on 10/2...
+
 // HELP NEEDED:
 // I have replaced "audioAssets.js" with this new script (boswellStories.js)
 // Rather than rely on staticly-defined list of podcasts, I want to load the URL of specific .wav files from
