@@ -20,6 +20,7 @@ Now wherever you pull in getBoswellStories would change to reflect that this is 
 
 'LaunchRequest' : function() {
   this.attributes['playOrder'] = Array.apply(null, {length: audioData.length}).map(Number.call, Number);
+  //this.attributes['playOrder'] = Array.apply(null, {length: list.length}).map(Number.call, Number); // MIKE CHANGED "audioData." to "list."
 
   // .. do a bunch of other stuff
 
@@ -40,4 +41,4 @@ Modify the LaunchRequest like this, to reflect that this is asynchronous:
   });
 },
 
-DONE, but I never called "getBoswellStories", I called boswellStories.  
+DONE, but I never called "getBoswellStories", I called boswellStories.

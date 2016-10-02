@@ -30,36 +30,51 @@ var params = {
         }
     };
 
-
-docClient.get(params, function (err, data) {
-    if (err) {
-        console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
-        return callback(err);
-    } else {
-
-        var audioData = [];
-        audioData.push({
+module.exports = function getBoswellStories(callback) {
+      var stories = [];
+      docClient.get(params, function (err, data) {
+        // stories.push({})  // do this for each story in the data response
+        stories.push({
             'title': data.Item.transcription,
             'url': data.Item.filename
         });
-        audioData.push({
+        stories.push({
             'title': "2. " + data.Item.transcription,
             'url': data.Item.filename
         });
  //       console.log("data.Item.filename: ", data.Item.filename); // data is properly loaded from the "data" db call above
-        console.log("audioData=", audioData); // displays the correct result when I run this on my console (and on Lambda)
+        console.log("stories=", stories); // displays the correct result when I run this on my console (and on Lambda)
+        callback(err, stories);
+      });
+    };
 
-        module.exports = audioData; // this does not seem to work!
-        return;
-    }
-});
+// DELETE ALL BELOW EVENTUALLY!
+
+// docClient.get(params, function (err, data) {
+//     if (err) {
+//         console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
+//         return callback(err);
+//     } else {
+//
+//         var audioData = [];
+//         audioData.push({
+//             'title': data.Item.transcription,
+//             'url': data.Item.filename
+//         });
+//         audioData.push({
+//             'title': "2. " + data.Item.transcription,
+//             'url': data.Item.filename
+//         });
+//  //       console.log("data.Item.filename: ", data.Item.filename); // data is properly loaded from the "data" db call above
+//         console.log("audioData=", audioData); // displays the correct result when I run this on my console (and on Lambda)
+//
+//         module.exports = audioData; // this does not seem to work!
+//         return;
+//     }
+// });
 
 // if I put the module.exports = audioData" line here, it tells me it can't find "audioData".  It is presumably
 // only available inside the docClient.get function above.  Argh.  Globals?
-
-
-
-
 
 // -------------------------------------------------------------------------------------
 // the OLD way (from the original audioAssets.js)
