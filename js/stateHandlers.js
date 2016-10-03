@@ -73,7 +73,7 @@ var stateHandlers = {
          *  All Intent Handlers for state : PLAY_MODE
          */
         'LaunchRequest' : function () {
-          var _this = this;
+          let _this = this;
             audioData(function(err, list) {  // Added per Mike Reinsten email
               // Initialize Attributes
                 _this.attributes['playOrder'] = Array.apply(null, {length: list.length}).map(Number.call, Number);
@@ -95,6 +95,9 @@ var stateHandlers = {
             } else {
                 _this.handler.state = constants.states.RESUME_DECISION_MODE;
                 console.log('at line 89!');
+                console.log('list[]=',list);
+               console.log("_this.attributes['playOrder']=",_this.attributes['playOrder']);
+               console.log("_this.attributes['index']=",_this.attributes['index']);
                 message = 'You were listening to ' + list[_this.attributes['playOrder'][_this.attributes['index']]].title +
                     ' Would you like to resume?';
                 reprompt = 'You can say yes to resume or no to play from the top.';
