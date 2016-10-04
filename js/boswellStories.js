@@ -18,8 +18,8 @@ AWS.config.update({
 var docClient = new AWS.DynamoDB.DocumentClient()
 
 var table = "boswellMemories"; // the name of my dynamoDB database
-//var boswellUserId = "EA51A89D-792B-4C20-9870-AC4D31C4D51F"; // Jeff Perrone BoswellUserId
-var boswellUserId = "18FE13AA-D5DB-4AA3-AFBE-4C1A0207AD91"; // Ted Barnett BoswellUserId
+var boswellUserId = "EA51A89D-792B-4C20-9870-AC4D31C4D51F"; // Jeff Perrone BoswellUserId
+//var boswellUserId = "18FE13AA-D5DB-4AA3-AFBE-4C1A0207AD91"; // Ted Barnett BoswellUserId
 
 var params = {
     TableName: table,
