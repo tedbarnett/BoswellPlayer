@@ -1,15 +1,12 @@
 ﻿'use strict';
 
-// Made Mike Reinstein changes on 10/2...
-
-// HELP NEEDED:
-// I have replaced "audioAssets.js" with this new script (boswellStories.js)
-// Rather than rely on staticly-defined list of podcasts, I want to load the URL of specific .wav files from
-// a DynamoDB database.  The "docClient.get" code below seems to work perfectly (I can see that from the console.log
-// lines, and I know that these are valid .wav files, BUT...
-// This may simply be a "closure" Javascript issue that my tiny brain cannot get around, but I cannot properly load
-// the array "audioData[]" into the module.exports for this script.  How can I use a dynamoDB call to load data into
-// the module.exports for this script?
+// TO DO
+// Don't let podcasts loop over and over (play most recent to least and then stop)
+// Always play the question title
+// aws dynamodb batch-write-item --request-items file://boswell_questions_for_dynamoDB_import.json
+// Here's a node app that loads data into a dynamoDB database: http://stackoverflow.com/questions/32678325/how-to-import-bulk-data-from-csv-to-dynamodb
+// Finish adding the questions to boswellMemories dynamoDB (manually!)
+// Store the boswellUserId in the boswellAttributes database so we can look it up easily based on AmazonID?
 
 var AWS = require("aws-sdk");
 
@@ -21,7 +18,8 @@ AWS.config.update({
 var docClient = new AWS.DynamoDB.DocumentClient()
 
 var table = "boswellMemories"; // the name of my dynamoDB database
-var boswellUserId = "1967D471-70F6-4BD7-9C03-7FEFB75B3D5F"; // index into dynamoDB database
+//var boswellUserId = "EA51A89D-792B-4C20-9870-AC4D31C4D51F"; // Jeff Perrone BoswellUserId
+var boswellUserId = "18FE13AA-D5DB-4AA3-AFBE-4C1A0207AD91"; // Ted Barnett BoswellUserId
 
 var params = {
     TableName: table,
@@ -34,61 +32,25 @@ module.exports = function getBoswellStories(callback) {
       var stories = [];
       docClient.get(params, function (err, data) {
         // stories.push({})  // do this for each story in the data response
+        var questionNumber = data.Item.question_id.substring(4, 6);
+        console.log("data.Item.question_id =  ", data.Item.question_id);
+        console.log("questionNumber =  ", questionNumber);
+        console.log("data.Item.filename =  ", "https://s3.amazonaws.com/boswellapp/" + data.Item.filename);
         stories.push({
-            'title': data.Item.transcription,
-            'url': data.Item.filename
+            'title': "Question number " + questionNumber,
+            'url': "https://s3.amazonaws.com/boswellapp/" + data.Item.filename,
+            'transcription': data.Item.transcription,
+            'username': data.Item.username
         });
-        stories.push({
-            'title': "2. " + data.Item.transcription,
-            'url': data.Item.filename
-        });
- //       console.log("data.Item.filename: ", data.Item.filename); // data is properly loaded from the "data" db call above
-        console.log("stories=", stories); // displays the correct result when I run this on my console (and on Lambda)
+        // stories.push({
+        //     'title': "Question number " + questionNumber,
+        //     'url': "https://s3.amazonaws.com/boswellapp/" + data.Item.filename
+        // });
+        // stories.push({
+        //     'title': "Question number " + questionNumber,
+        //     'url': "https://s3.amazonaws.com/boswellapp/" + data.Item.filename
+        // });
+        console.log("data = ", data);
         callback(err, stories);
       });
     };
-
-// DELETE ALL BELOW EVENTUALLY!
-
-// docClient.get(params, function (err, data) {
-//     if (err) {
-//         console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
-//         return callback(err);
-//     } else {
-//
-//         var audioData = [];
-//         audioData.push({
-//             'title': data.Item.transcription,
-//             'url': data.Item.filename
-//         });
-//         audioData.push({
-//             'title': "2. " + data.Item.transcription,
-//             'url': data.Item.filename
-//         });
-//  //       console.log("data.Item.filename: ", data.Item.filename); // data is properly loaded from the "data" db call above
-//         console.log("audioData=", audioData); // displays the correct result when I run this on my console (and on Lambda)
-//
-//         module.exports = audioData; // this does not seem to work!
-//         return;
-//     }
-// });
-
-// if I put the module.exports = audioData" line here, it tells me it can't find "audioData".  It is presumably
-// only available inside the docClient.get function above.  Argh.  Globals?
-
-// -------------------------------------------------------------------------------------
-// the OLD way (from the original audioAssets.js)
-// this works of course, but it is outside the dynamoDB .get request that I need to make!
-
-//var audioData = [
-//    {
-//        'title': 'Question 65: Describe an error you made, why you made it, and the impact it had on your life.',
-//        'url': 'https://s3.amazonaws.com/boswellapp/1472935087.45316-1967D471-70F6-4BD7-9C03-7FEFB75B3D5F-100065.wav'
-//    },
-//    {
-//        'title': 'Question 79: Have you ever been a whistleblower, exposing something unethical or illegal? If so, describe it.',
-//        'url': 'https://s3.amazonaws.com/boswellapp/1472935287.18748-1967D471-70F6-4BD7-9C03-7FEFB75B3D5F-100079.wav'
-//    }
-//];
-
-//module.exports = audioData;

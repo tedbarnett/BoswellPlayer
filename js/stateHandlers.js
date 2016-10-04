@@ -10,42 +10,44 @@ var stateHandlers = {
          *  All Intent Handlers for state : START_MODE
          */
         'LaunchRequest' : function () {
-            audioData(function(err, list) {  // Added per Mike Reinsten email
+          let _this = this;
+            audioData(function(err, list) {  // Added per Mike Reinstein
               // Initialize Attributes
-              this.attributes['playOrder'] = Array.apply(null, {length: list.length}).map(Number.call, Number);
-              this.attributes['index'] = 0;
-              this.attributes['offsetInMilliseconds'] = 0;
-              this.attributes['loop'] = true;
-              this.attributes['shuffle'] = false;
-              this.attributes['playbackIndexChanged'] = true;
+              _this.attributes['playOrder'] = Array.apply(null, {length: list.length}).map(Number.call, Number);
+              _this.attributes['index'] = 0;
+              _this.attributes['offsetInMilliseconds'] = 0;
+              _this.attributes['loop'] = false;
+              _this.attributes['shuffle'] = false;
+              _this.attributes['playbackIndexChanged'] = true;
               //  Change state to START_MODE
-              this.handler.state = constants.states.START_MODE;
+              _this.handler.state = constants.states.START_MODE;
 
-              var message = 'Welcome to Boswell Memory. You can say, playback the interview, to begin listening to previously recorded interviews.';
+              var message = 'Welcome to Boswell Memories. You can say, playback, to begin listening to recorded interviews.';
               var reprompt = 'You can say, playback the interview, to begin.';
 
-              this.response.speak(message).listen(reprompt);
-              this.emit(':responseReady');
+              _this.response.speak(message).listen(reprompt);
+              _this.emit(':responseReady');
           });
         },
         'PlayAudio' : function () {
-            audioData(function(err, list) {  // Added per Mike Reinsten email
-              if (!this.attributes['playOrder']) {
+          let _this = this;
+            audioData(function(err, list) {  // Added per Mike Reinstein
+              if (!_this.attributes['playOrder']) {
                   // Initialize Attributes if undefined.
-                  this.attributes['playOrder'] = Array.apply(null, {length: list.length}).map(Number.call, Number);
-                  this.attributes['index'] = 0;
-                  this.attributes['offsetInMilliseconds'] = 0;
-                  this.attributes['loop'] = true;
-                  this.attributes['shuffle'] = false;
-                  this.attributes['playbackIndexChanged'] = true;
+                  _this.attributes['playOrder'] = Array.apply(null, {length: list.length}).map(Number.call, Number);
+                  _this.attributes['index'] = 0;
+                  _this.attributes['offsetInMilliseconds'] = 0;
+                  _this.attributes['loop'] = false;
+                  _this.attributes['shuffle'] = false;
+                  _this.attributes['playbackIndexChanged'] = true;
                   //  Change state to START_MODE
-                  this.handler.state = constants.states.START_MODE;
+                  _this.handler.state = constants.states.START_MODE;
               }
-              controller.play.call(this);
+              controller.play.call(_this);
               });
         },
         'AMAZON.HelpIntent' : function () {
-            var message = 'Welcome to Boswell. You can say, playback the interview, to begin listening to previously recorded interviews.';
+            var message = 'Welcome to Boswell Memories. You can say, playback, to begin listening to recorded interviews.';
             this.response.speak(message).listen(message);
             this.emit(':responseReady');
         },
@@ -74,7 +76,7 @@ var stateHandlers = {
          */
         'LaunchRequest' : function () {
           let _this = this;
-            audioData(function(err, list) {  // Added per Mike Reinsten email
+            audioData(function(err, list) {  // Added per Mike Reinstein
               // Initialize Attributes
                 _this.attributes['playOrder'] = Array.apply(null, {length: list.length}).map(Number.call, Number);
             /*
@@ -90,14 +92,14 @@ var stateHandlers = {
             var reprompt;
             if (_this.attributes['playbackFinished']) {
                 _this.handler.state = constants.states.START_MODE;
-                message = 'Welcome to Boswell. You can say, playback the interview, to begin listening to previously recorded interviews.';
+                message = 'Welcome to Boswell Memories. You can say, playback, to begin listening to recorded interviews.';
                 reprompt = 'You can say, playback the interview, to begin.';
             } else {
                 _this.handler.state = constants.states.RESUME_DECISION_MODE;
-                console.log('at line 89!');
                 console.log('list[]=',list);
                console.log("_this.attributes['playOrder']=",_this.attributes['playOrder']);
                console.log("_this.attributes['index']=",_this.attributes['index']);
+//               console.log("full list request: ",list[_this.attributes['playOrder'][_this.attributes['index']]].title);
                 message = 'You were listening to ' + list[_this.attributes['playOrder'][_this.attributes['index']]].title +
                     ' Would you like to resume?';
                 reprompt = 'You can say yes to resume or no to play from the top.';
@@ -108,11 +110,16 @@ var stateHandlers = {
           });
         },
         'PlayAudio': function () {
-          audioData(function(err, list) {  // Added per Mike Reinsten email
-              message = 'You are now listening to ' + list[this.attributes['playOrder'][this.attributes['index']]].title +
-      ' Ready?';
-              reprompt = 'You can say yes to resume or no to play from the top.';
-              controller.play.call(this)
+          let _this = this;
+            audioData(function(err, list) {  // Added per Mike Reinstein
+              // console.log("--- Inside PlayAudio function line 115 ---",_this.attributes['index']);
+              // console.log('list[]=',list);
+              // console.log("_this.attributes['playOrder']=",_this.attributes['playOrder']);
+              // console.log("_this.attributes['index']=",_this.attributes['index']);
+              // console.log("list[_this.attributes['playOrder'][_this.attributes['index']]].title=",list[_this.attributes['playOrder'][_this.attributes['index']]].title);
+              var message = 'You are now listening to ' + list[_this.attributes['playOrder'][_this.attributes['index']]].title + ' Ready?';
+              var reprompt = 'You can say yes to resume or no to play from the top.';
+              controller.play.call(_this)
           });
         },
         'AMAZON.NextIntent' : function () { controller.playNext.call(this) },
@@ -156,23 +163,25 @@ var stateHandlers = {
          *  All Intent Handlers for state : RESUME_DECISION_MODE
          */
         'LaunchRequest' : function () {
-          audioData(function(err, list) {  // Added per Mike Reinsten email
-            var message = 'You were listening to ' + list[this.attributes['playOrder'][this.attributes['index']]].title +
+          let _this = this;
+            audioData(function(err, list) {  // Added per Mike Reinstein
+            var message = 'You were listening to ' + list[_this.attributes['playOrder'][_this.attributes['index']]].title +
                 ' Would you like to resume?';
             var reprompt = 'You can say yes to resume or no to play from the top.';
-            this.response.speak(message).listen(reprompt);
-            this.emit(':responseReady');
+            _this.response.speak(message).listen(reprompt);
+            _this.emit(':responseReady');
           });
         },
         'AMAZON.YesIntent' : function () { controller.play.call(this) },
         'AMAZON.NoIntent' : function () { controller.reset.call(this) },
         'AMAZON.HelpIntent' : function () {
-            audioData(function(err, list) {  // Added per Mike Reinsten email
-            var message = 'You were listening to ' + list[this.attributes['index']].title +
+          let _this = this;
+            audioData(function(err, list) {  // Added per Mike Reinstein
+            var message = 'You were listening to ' + list[_this.attributes['index']].title +
                 ' Would you like to resume?';
             var reprompt = 'You can say yes to resume or no to play from the top.';
-            this.response.speak(message).listen(reprompt);
-            this.emit(':responseReady');
+            _this.response.speak(message).listen(reprompt);
+            _this.emit(':responseReady');
           });
         },
         'AMAZON.StopIntent' : function () {
@@ -201,38 +210,46 @@ module.exports = stateHandlers;
 var controller = function () {
     return {
         play: function () {
+          let _this = this;
+          audioData(function(err, list) {  // Added per Mike Reinstein -- DOES IT WORK IN THIS CONTEXT?
+            // Initialize Attributes
             /*
              *  Using the function to begin playing audio when:
              *      Play Audio intent invoked.
              *      Resuming audio when stopped/paused.
              *      Next/Previous commands issued.
              */
-            this.handler.state = constants.states.PLAY_MODE;
+            _this.handler.state = constants.states.PLAY_MODE;
 
-            if (this.attributes['playbackFinished']) {
-                // Reset to top of the playlist when reached end.
-                this.attributes['index'] = 0;
-                this.attributes['offsetInMilliseconds'] = 0;
-                this.attributes['playbackIndexChanged'] = true;
-                this.attributes['playbackFinished'] = false;
-            }
+            // if (_this.attributes['playbackFinished']) {
+            //     // Reset to top of the playlist when reached end.
+            //     _this.attributes['index'] = 0;
+            //     _this.attributes['offsetInMilliseconds'] = 0;
+            //     _this.attributes['playbackIndexChanged'] = true;
+            //     _this.attributes['playbackFinished'] = false;
+            // }
+            // temporary: reset to first item on playlist every time
+              _this.attributes['index'] = 0;
+              _this.attributes['offsetInMilliseconds'] = 0;
+              _this.attributes['playbackIndexChanged'] = true;
+              _this.attributes['playbackFinished'] = false;
 
-            var token = String(this.attributes['playOrder'][this.attributes['index']]);
+            var token = String(_this.attributes['playOrder'][_this.attributes['index']]);
             var playBehavior = 'REPLACE_ALL';
-            audioData(function(err, list) {  // Added per Mike Reinsten email -- DOES THIS WORK IN THIS CONTEXT?
-              var podcast = list[this.attributes['playOrder'][this.attributes['index']]];
-              var offsetInMilliseconds = this.attributes['offsetInMilliseconds'];
+
+              var podcast = list[_this.attributes['playOrder'][_this.attributes['index']]];
+              var offsetInMilliseconds = _this.attributes['offsetInMilliseconds'];
               // Since play behavior is REPLACE_ALL, enqueuedToken attribute need to be set to null.
-              this.attributes['enqueuedToken'] = null;
+              _this.attributes['enqueuedToken'] = null;
 
-              if (canThrowCard.call(this)) {
-                  var cardTitle = 'Playing ' + podcast.title;
-                  var cardContent = 'Playing ' + podcast.title;
-                  this.response.cardRenderer(cardTitle, cardContent, null);
+              if (canThrowCard.call(_this)) {
+                  var cardTitle = podcast.title;
+                  var cardContent = 'Watson transcription: ' + podcast.transcription;
+                  _this.response.cardRenderer(cardTitle, cardContent, null);
               }
-
-              this.response.audioPlayerPlay(playBehavior, podcast.url, token, null, offsetInMilliseconds);
-              this.emit(':responseReady');
+              console.log("podcast.url = ", podcast.url);
+              _this.response.audioPlayerPlay(playBehavior, podcast.url, token, null, offsetInMilliseconds);
+              _this.emit(':responseReady');
             });
         },
         stop: function () {
@@ -244,62 +261,64 @@ var controller = function () {
             this.emit(':responseReady');
         },
         playNext: function () {
-            audioData(function(err, list) {  // Added per Mike Reinsten email
+          let _this = this;
+            audioData(function(err, list) {  // Added per Mike Reinstein
             /*
              *  Called when AMAZON.NextIntent or PlaybackController.NextCommandIssued is invoked.
              *  Index is computed using token stored when AudioPlayer.PlaybackStopped command is received.
-             *  If reached at the end of the playlist, choose behavior based on "loop" flag.
+             *  If reached the end of the playlist, choose behavior based on "loop" flag.
              */
-            var index = this.attributes['index'];
+            var index = _this.attributes['index'];
             index += 1;
             // Check for last audio file.
             if (index === list.length) {
-                if (this.attributes['loop']) {
+                if (_this.attributes['loop']) {
                     index = 0;
                 } else {
-                    // Reached at the end. Thus reset state to start mode and stop playing.
-                    this.handler.state = constants.states.START_MODE;
+                    // Reached the end. Thus reset state to start mode and stop playing.
+                    _this.handler.state = constants.states.START_MODE;
 
-                    var message = 'You have reached at the end of the playlist.';
-                    this.response.speak(message).audioPlayerStop();
-                    return this.emit(':responseReady');
+                    var message = 'You have reached the end of the playlist.';
+                    _this.response.speak(message).audioPlayerStop();
+                    return _this.emit(':responseReady');
                 }
             }
             // Set values to attributes.
-            this.attributes['index'] = index;
-            this.attributes['offsetInMilliseconds'] = 0;
-            this.attributes['playbackIndexChanged'] = true;
-            controller.play.call(this);
+            _this.attributes['index'] = index;
+            _this.attributes['offsetInMilliseconds'] = 0;
+            _this.attributes['playbackIndexChanged'] = true;
+            controller.play.call(_this);
           });
         },
         playPrevious: function () {
-            udioData(function(err, list) {  // Added per Mike Reinsten email
+          let _this = this;
+            audioData(function(err, list) {  // Added per Mike Reinstein
             /*
              *  Called when AMAZON.PreviousIntent or PlaybackController.PreviousCommandIssued is invoked.
              *  Index is computed using token stored when AudioPlayer.PlaybackStopped command is received.
              *  If reached at the end of the playlist, choose behavior based on "loop" flag.
              */
-            var index = this.attributes['index'];
+            var index = _this.attributes['index'];
             index -= 1;
             // Check for last audio file.
             if (index === -1) {
-                if (this.attributes['loop']) {
+                if (_this.attributes['loop']) {
                     index = list.length - 1;
                 } else {
                     // Reached at the end. Thus reset state to start mode and stop playing.
-                    this.handler.state = constants.states.START_MODE;
+                    _this.handler.state = constants.states.START_MODE;
 
-                    var message = 'You have reached at the start of the playlist.';
-                    this.response.speak(message).audioPlayerStop();
-                    return this.emit(':responseReady');
+                    var message = 'You have reached the start of the playlist.';
+                    _this.response.speak(message).audioPlayerStop();
+                    return _this.emit(':responseReady');
                 }
             }
             // Set values to attributes.
-            this.attributes['index'] = index;
-            this.attributes['offsetInMilliseconds'] = 0;
-            this.attributes['playbackIndexChanged'] = true;
+            _this.attributes['index'] = index;
+            _this.attributes['offsetInMilliseconds'] = 0;
+            _this.attributes['playbackIndexChanged'] = true;
 
-            controller.play.call(this);
+            controller.play.call(_this);
           });
         },
         loopOn: function () {
@@ -329,15 +348,16 @@ var controller = function () {
             });
         },
         shuffleOff: function () {
-            audioData(function(err, list) {  // Added per Mike Reinsten email
+          let _this = this;
+            audioData(function(err, list) {  // Added per Mike Reinstein
             // Turn off shuffle play.
-            if (this.attributes['shuffle']) {
-                this.attributes['shuffle'] = false;
+            if (_this.attributes['shuffle']) {
+                _this.attributes['shuffle'] = false;
                 // Although changing index, no change in audio file being played as the change is to account for reordering playOrder
-                this.attributes['index'] = this.attributes['playOrder'][this.attributes['index']];
-                this.attributes['playOrder'] = Array.apply(null, {length: list.length}).map(Number.call, Number);
+                _this.attributes['index'] = _this.attributes['playOrder'][_this.attributes['index']];
+                _this.attributes['playOrder'] = Array.apply(null, {length: list.length}).map(Number.call, Number);
             }
-            controller.play.call(this);
+            controller.play.call(_this);
           });
         },
         startOver: function () {
@@ -370,7 +390,7 @@ function canThrowCard() {
 }
 
 function shuffleOrder(callback) {
-    audioData(function(err, list) {  // Added per Mike Reinsten email
+    audioData(function(err, list) {  // Added per Mike Reinstein
     // Algorithm : Fisher-Yates shuffle
     var array = Array.apply(null, {length: list.length}).map(Number.call, Number);
     var currentIndex = array.length;

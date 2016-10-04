@@ -39,6 +39,7 @@ var audioEventHandlers = Alexa.CreateStateHandler(constants.states.PLAY_MODE, {
         this.emit(':saveState', true);
     },
     'PlaybackNearlyFinished' : function () {
+        let _this = this;
         audioData(function(err, list) {  // Added per Mike Reinsten email
         /*
          * AudioPlayer.PlaybackNearlyFinished Directive received.
@@ -46,38 +47,38 @@ var audioEventHandlers = Alexa.CreateStateHandler(constants.states.PLAY_MODE, {
          * Storing details in dynamoDB using attributes.
          * Enqueuing the next audio file.
          */
-        if (this.attributes['enqueuedToken']) {
+        if (_this.attributes['enqueuedToken']) {
             /*
              * Since AudioPlayer.PlaybackNearlyFinished Directive are prone to be delivered multiple times during the
              * same audio being played.
              * If an audio file is already enqueued, exit without enqueuing again.
              */
-            return this.context.succeed(true);
+            return _this.context.succeed(true);
         }
 
-        var enqueueIndex = this.attributes['index'];
+        var enqueueIndex = _this.attributes['index'];
         enqueueIndex +=1;
         // Checking if  there are any items to be enqueued.
         if (enqueueIndex === list.length) {
-            if (this.attributes['loop']) {
+            if (_this.attributes['loop']) {
                 // Enqueueing the first item since looping is enabled.
                 enqueueIndex = 0;
             } else {
                 // Nothing to enqueue since reached end of the list and looping is disabled.
-                return this.context.succeed(true);
+                return _this.context.succeed(true);
             }
         }
         // Setting attributes to indicate item is enqueued.
-        this.attributes['enqueuedToken'] = String(this.attributes['playOrder'][enqueueIndex]);
+        _this.attributes['enqueuedToken'] = String(_this.attributes['playOrder'][enqueueIndex]);
 
-        var enqueueToken = this.attributes['enqueuedToken'];
+        var enqueueToken = _this.attributes['enqueuedToken'];
         var playBehavior = 'ENQUEUE';
-        var podcast = list[this.attributes['playOrder'][enqueueIndex]];
-        var expectedPreviousToken = this.attributes['token'];
+        var podcast = list[_this.attributes['playOrder'][enqueueIndex]];
+        var expectedPreviousToken = _this.attributes['token'];
         var offsetInMilliseconds = 0;
 
-        this.response.audioPlayerPlay(playBehavior, podcast.url, enqueueToken, expectedPreviousToken, offsetInMilliseconds);
-        this.emit(':responseReady');
+        _this.response.audioPlayerPlay(playBehavior, podcast.url, enqueueToken, expectedPreviousToken, offsetInMilliseconds);
+        _this.emit(':responseReady');
       });
     },
     'PlaybackFailed' : function () {
