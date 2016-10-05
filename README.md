@@ -1,4 +1,4 @@
 # BoswellPlayer
-Playback most recent Boswell recordings
+Playback most recent S3 .wav files stored in a dynamoDB database
 
-Reads data from DynamoDB
+Based on helpful Alexa/audio-player repository.  Link to installation instructions here: link.
