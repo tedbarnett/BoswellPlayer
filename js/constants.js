@@ -2,11 +2,19 @@
 
 module.exports = Object.freeze({
 
-    // App-ID. TODO: set to your own Skill App ID from the developer portal.
+    // App-ID for Amazon Alexa Skill (see Developer Portal for appID)
     appId: 'amzn1.ask.skill.52a97ee7-2a04-4b8d-a4d9-066276556645',
 
-    //  DynamoDB Table name
+    //  DynamoDB Table names
     dynamoDBTableName : 'boswellAttributes',
+    memoriesTableName : 'boswellMemories',
+
+    // Other constants
+    resumeReprompt : 'You can say YES to resume or NO to start with the most recent interview',
+    //boswellUserId : 'EA51A89D-792B-4C20-9870-AC4D31C4D51F', // jPerrone - for testing
+    boswellUserId : '18FE13AA-D5DB-4AA3-AFBE-4C1A0207AD91', // tBarnett - for testing
+    urlPrefixS3 : 'https://s3.amazonaws.com/boswellapp',
+
 
     /*
      *  States:
